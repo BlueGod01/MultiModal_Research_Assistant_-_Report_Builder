@@ -77,6 +77,8 @@ def convert_large_document(document_path: str, parsing_strategy: str = "medium")
         layout_batch_size=8, # default 4 — pages batched for layout detection
         table_batch_size=8, # default 4 — pages batched for table extraction
     )
+    else:
+        raise ValueError(f"Unknown parsing strategy: {parsing_strategy}")
     pipeline_options.page_chunk_size = 50
 
     converter = DocumentConverter(
@@ -124,6 +126,8 @@ def convert_document(document_path: str, parsing_strategy: str = "medium"):
             table_mode=TableFormerMode.ACCURATE,
             images_scale = 1.0
         )
+    else:
+        raise ValueError(f"Unknown parsing strategy: {parsing_strategy}")
     doc.close()
     converter = DocumentConverter(
         format_options={

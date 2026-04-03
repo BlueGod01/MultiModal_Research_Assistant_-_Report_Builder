@@ -29,6 +29,10 @@ def run_parallel_pipeline(directory_path: str, max_workers: int = None, strategy
     - max_workers: Limits parallel processes to prevent memory/CPU exhaustion. 
       Defaults to number of processors if None.
     """
+    if not os.path.exists(directory_path):
+        print(f"Directory '{directory_path}' does not exist.")
+        return
+
     # Gather all PDF paths from directory
     pdf_paths = [
         os.path.join(directory_path, f) 

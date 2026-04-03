@@ -7,11 +7,13 @@ from typing import Optional, List
 import base64
 from io import BytesIO
 from PIL import Image
+
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY", "your-pinecone-api-key")
 PINECONE_INDEX_NAME = "multimodal-documents"
 EMBEDDING_MODEL = "models/text-embedding-004" # Google's latest embedding model
 EMBEDDING_DIMENSION = 768 # text-embedding-004 outputs 768-dim vectors
 BATCH_SIZE = 96 # Pinecone upsert batch size
+
 def init_pinecone_index()-> Pinecone.Index:
     """Create or connect to a Pinecone serverless index."""
     try:
@@ -42,8 +44,9 @@ def get_base64_image(image_path):
     
     # Save image to a BytesIO object
     buffered = BytesIO()
-    # Use the image's original format (e.g., JPEG, PNG)
-    img.save(buffered, format=img.format)
+    # Use the image's original format (e.g., JPEG, PNG), defaulting to PNG if None
+    img_format = img.format if img.format else 'PNG'
+    img.save(buffered, format=img_format)
     
     # Encode the bytes to a base64 string
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
@@ -92,7 +95,9 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
     
     #Upserting Image embeddings in 'images' namespace
     if image_path_list:
-        for image_index, image_path in image_path_list.items():
+        for image_item in image_path_list:
+            image_index = image_item["item_idx"]
+            image_path = image_item["img_path"]
             image_embedding = embed_image(image_path)
 
             vector_id = generate_vector_id(
@@ -112,42 +117,41 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
     stats = index.describe_index_stats()
     print(f"Index stats: {stats}")
 
-    def query_pinecone(query: str, top_k: int = 5, namespace: Optional[str] = None) -> list[dict]:
-        """Query the index and return matching chunks with metadata."""
-        query_embedding = get_query_embedding(query)
+def query_pinecone(query: str, top_k: int = 5, namespace: Optional[str] = None) -> list[dict]:
+    """Query the index and return matching chunks with metadata."""
+    query_embedding = get_query_embedding(query)
 
-        index = Pinecone(api_key=PINECONE_API_KEY).Index(PINECONE_INDEX_NAME)
-        results = index.query(
-            vector=query_embedding,
-            top_k=top_k,
-            include_metadata=True,
-            namespace=namespace,
-        )
+    index = Pinecone(api_key=PINECONE_API_KEY).Index(PINECONE_INDEX_NAME)
+    results = index.query(
+        vector=query_embedding,
+        top_k=top_k,
+        include_metadata=True,
+        namespace=namespace,
+    )
 
-        text_matches = []
-        for match in results["matches"]:
-            text_matches.append({
-                "score": match["score"],
-                "text": match["metadata"].get("enriched_text", ""),
-                "source": match["metadata"].get("source_document", ""),
-                "pages": match["metadata"].get("pages", []),
-                "headings": match["metadata"].get("heading_trail", ""),
-                "item_types": match["metadata"].get("item_types", []),
-            })
-        
-        clip_vector = embed_image_query(query)
-        image_results = index.query(
+    text_matches = []
+    for match in results["matches"]:
+        text_matches.append({
+            "score": match["score"],
+            "text": match["metadata"].get("enriched_text", ""),
+            "source": match["metadata"].get("source_document", ""),
+            "pages": match["metadata"].get("pages", []),
+            "headings": match["metadata"].get("heading_trail", ""),
+            "item_types": match["metadata"].get("item_types", []),
+        })
+    
+    clip_vector = embed_image_query(query)
+    image_results = index.query(
         vector=clip_vector,
         top_k=5,
         namespace='images',
         include_metadata=True
     )
-        image_matches = []
-        for match in image_results["matches"]:
-            image_matches.append({
-                "score": match["score"],
-                "image_path": match["metadata"].get("source_document", ""),
-                "base64_string": match["metadata"].get("base64_string", ""),
-            })
-        return text_matches, image_matches
-
+    image_matches = []
+    for match in image_results["matches"]:
+        image_matches.append({
+            "score": match["score"],
+            "image_path": match["metadata"].get("source_document", ""),
+            "base64_string": match["metadata"].get("base64_string", ""),
+        })
+    return text_matches, image_matches

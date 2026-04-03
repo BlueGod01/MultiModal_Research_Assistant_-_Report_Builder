@@ -38,9 +38,9 @@ def embed_image(image_path):
     image = Image.open(image_path)
     inputs = clip_processor(images=image, return_tensors="pt")
     outputs = clip_model.get_image_features(**inputs)
-    return outputs.detach().numpy()[0]
+    return outputs.detach().numpy()[0].tolist()
 def embed_image_query(query:str,):
-    clip_inputs = clip_processor(text=[query], return_tensors="pt")
-    clip_vector = clip_model.get_text_features(**clip_inputs).detach().numpy()[0]
+    clip_inputs = clip_processor(text=[query], return_tensors="pt", padding=True, truncation=True)
+    clip_vector = clip_model.get_text_features(**clip_inputs).detach().numpy()[0].tolist()
 
     return clip_vector
