@@ -1,0 +1,59 @@
+# -----------------------------
+# Core API & Async
+# -----------------------------
+fastapi
+uvicorn
+aiofiles
+
+# -----------------------------
+# Task Queue (optional but recommended)
+# -----------------------------
+celery
+redis
+
+# -----------------------------
+# PDF Parsing & Processing
+# -----------------------------
+unstructured[pdf]
+pymupdf
+pypdf
+pdf2image
+docling
+# -----------------------------
+# OCR & Image Processing
+# -----------------------------
+pytesseract
+pillow
+opencv-python
+
+# -----------------------------
+# LangChain (for Document + chunking)
+# -----------------------------
+langchain
+langchain-core
+# -----------------------------
+# Google Generative AI (Embeddings + LLM)
+# -----------------------------
+google-generativeai
+transformers
+# -----------------------------
+# Vector Database
+# -----------------------------
+pinecone-client
+
+# -----------------------------
+# Parallel & Performance
+# -----------------------------
+tqdm
+
+# -----------------------------
+# Utilities
+# -----------------------------
+python-dotenv
+uuid
+
+#This are not pip packages but are used in the code
+# --------These are system-level dependencies that need to be installed separately--------
+# Tesseract OCR Engine (for pytesseract)
+#sudo apt install tesseract-ocr
+#sudo apt install poppler-utils
