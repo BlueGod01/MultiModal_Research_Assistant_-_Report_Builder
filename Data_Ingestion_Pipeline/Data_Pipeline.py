@@ -1,9 +1,9 @@
 import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
-from parser import convert_document
-from chunker import extract_and_chunk
-from Pinecone_Functions import store_in_pinecone
+from Data_Ingestion_Pipeline.parser import convert_document
+from Data_Ingestion_Pipeline.chunker import extract_and_chunk
+from Data_Ingestion_Pipeline.Pinecone_Functions import store_in_pinecone
 
 PDF_DIR = "uploads"
 def pipeline(document_path: str, parsing_strategy: str = "medium"):
@@ -23,7 +23,7 @@ def pipeline(document_path: str, parsing_strategy: str = "medium"):
     except Exception as e:
         print(f"Error processing {document_path}: {e}")
 
-def run_parallel_pipeline(directory_path: str, max_workers: int = None, strategy: str = "medium")-> None:
+def run_parallel_pipeline(directory_path: str, max_workers: int = 2, strategy: str = "medium")-> None:
     """
     Extracts all PDFs from a directory and processes them in parallel.
     - max_workers: Limits parallel processes to prevent memory/CPU exhaustion. 
@@ -41,8 +41,8 @@ def run_parallel_pipeline(directory_path: str, max_workers: int = None, strategy
     ]
 
     if not pdf_paths:
-        print("No PDF files found in the directory.")
-        return
+        return "No PDF files found in the directory."
+        
 
     # ProcessPoolExecutor for parallelism (bypassing GIL)
     # Recommended: Set max_workers to a value that balances CPU cores and RAM

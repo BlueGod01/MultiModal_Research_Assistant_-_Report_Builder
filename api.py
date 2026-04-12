@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 import aiofiles
 import os
 from Data_Ingestion_Pipeline.Data_Pipeline import run_parallel_pipeline
-
+from typing import Literal
 app = FastAPI()
 
 UPLOAD_DIR = "uploads"
@@ -17,6 +17,8 @@ async def upload_pdf(file: UploadFile = File(...)):
     return {"message": "Processing started", "file": file.filename}
 
 @app.post("/Knowledge_base")
-async def create_knowledge_base(UPLOAD_DIR = "uploads", parsing_strategy):
+async def create_knowledge_base(UPLOAD_DIR = "uploads", parsing_strategy:Literal["fast", "medium", "deep"] = "medium"):
+    if parsing_strategy not in ["fast", "medium", "deep"]:
+        return {"error": "Invalid parsing strategy. Choose from 'fast', 'medium', or 'deep'."}
     run_parallel_pipeline(UPLOAD_DIR, max_workers=4, strategy=parsing_strategy)
     return {"message": "Knowledge base creation started"}

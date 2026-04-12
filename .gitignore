@@ -1,4 +1,8 @@
 Research_Assistant_Texts.txt 
 .env
+venv
 .venv
 Exp_Scripts
+__pycache__
+.ipynb_checkpoints
+uv.lock

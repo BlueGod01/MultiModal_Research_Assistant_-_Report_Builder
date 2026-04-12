@@ -1,14 +1,16 @@
 from pinecone import Pinecone, ServerlessSpec
 import os
-from embedder import get_document_embeddings, get_query_embedding
-from embedder import embed_image, embed_image_query
+from Data_Ingestion_Pipeline.embedder import get_document_embeddings, get_query_embedding
+from Data_Ingestion_Pipeline.embedder import embed_image, embed_image_query
 import hashlib
 from typing import Optional, List
 import base64
 from io import BytesIO
 from PIL import Image
+from dotenv import load_dotenv
+load_dotenv()
 
-PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY", "your-pinecone-api-key")
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_INDEX_NAME = "multimodal-documents"
 EMBEDDING_MODEL = "models/text-embedding-004" # Google's latest embedding model
 EMBEDDING_DIMENSION = 768 # text-embedding-004 outputs 768-dim vectors
@@ -91,7 +93,7 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
     print(f"Upserting {len(vectors)} vectors to Pinecone...")
     for i in range(0, len(vectors), BATCH_SIZE):
         batch = vectors[i : i + BATCH_SIZE]
-        index.upsert(vectors=batch, namespace='text')
+        index.upsert(vectors=batch, namespace='text&tables')
     
     #Upserting Image embeddings in 'images' namespace
     if image_path_list:
@@ -112,8 +114,8 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
                     "base64_string": get_base64_image(image_path)
                 }
             }], namespace='images')
-    print(f"✅ Successfully stored {len(vectors)} chunks in '{PINECONE_INDEX_NAME}'")
-    print(f"✅ Successfully stored {len(image_path_list)} images in '{PINECONE_INDEX_NAME}' under 'images' namespace")
+    print(f" Successfully stored {len(vectors)} chunks in '{PINECONE_INDEX_NAME}'")
+    print(f" Successfully stored {len(image_path_list)} images in '{PINECONE_INDEX_NAME}' under 'images' namespace")
     stats = index.describe_index_stats()
     print(f"Index stats: {stats}")
 
@@ -126,7 +128,7 @@ def query_pinecone(query: str, top_k: int = 5, namespace: Optional[str] = None) 
         vector=query_embedding,
         top_k=top_k,
         include_metadata=True,
-        namespace=namespace,
+        namespace='text&tables',
     )
 
     text_matches = []

@@ -25,17 +25,24 @@ docling
 pytesseract
 pillow
 opencv-python
-
+torch
 # -----------------------------
 # LangChain (for Document + chunking)
 # -----------------------------
 langchain
 langchain-core
+langchain-community
+langchain-anthropic
+langchain-openai
 # -----------------------------
 # Google Generative AI (Embeddings + LLM)
 # -----------------------------
 google-generativeai
 transformers
+langchain-google-genai
+# -----------------------------
+# For memory management and checkpointing
+langgraph-checkpoint-sqlite
 # -----------------------------
 # Vector Database
 # -----------------------------
@@ -51,6 +58,14 @@ tqdm
 # -----------------------------
 python-dotenv
 uuid
+
+# -----------------------------
+# LangGraph Workflow 
+# -----------------------------
+langgraph
+tavily-python
+reportlab
+markdown
 
 #This are not pip packages but are used in the code
 # --------These are system-level dependencies that need to be installed separately--------
