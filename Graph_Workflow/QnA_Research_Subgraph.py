@@ -10,6 +10,7 @@ from Graph_Workflow.tools import tavily_search, tavily_extract
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.graph import StateGraph, END
 import re
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langchain.tools import tool
 from Brain import google_llm
 from langchain.agents import create_react_agent, AgentExecutor
@@ -152,7 +153,7 @@ General:
     Bot = google_llm(model="gemini-3.5-flash", temperature=0.0, streaming=True)
     QnA_bot = Bot.with_structured_output(QA)
     response = QnA_bot.invoke({"messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": state["chat_history"][-1].content if state["chat_history"] else state["user_input"]}, {"role": "Research_Agent", "content": f"Research Agent's Response: {state.get('research_response').summary}\n\nRAG Research: {state.get('research_response').RAG_Research}\n\nWeb Search Results: {state.get('research_response').Web_Search_Results}"}]})
-    return {"chat_history":response.qa_response, "user_demand": response.user_demand, "needs_research": response.needs_research, "qa_response": response.qa_response, "need_to_create_report": response.need_to_create_report}
+    return {"chat_history": [HumanMessage(content=state["user_input"]),AIMessage(content=response.qa_response)], "user_demand": response.user_demand, "needs_research": response.needs_research, "qa_response": response.qa_response, "need_to_create_report": response.need_to_create_report}
 
 # -----------------------------
 # Building the State Graph

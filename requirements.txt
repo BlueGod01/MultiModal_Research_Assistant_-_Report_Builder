@@ -4,6 +4,8 @@
 fastapi
 uvicorn
 aiofiles
+pydantic
+python-multipart
 
 # -----------------------------
 # Task Queue (optional but recommended)
@@ -40,9 +42,11 @@ langchain-openai
 google-generativeai
 transformers
 langchain-google-genai
+sentence-transformers
 # -----------------------------
 # For memory management and checkpointing
 langgraph-checkpoint-sqlite
+sqlalchemy
 # -----------------------------
 # Vector Database
 # -----------------------------
@@ -57,7 +61,7 @@ tqdm
 # Utilities
 # -----------------------------
 python-dotenv
-uuid
+questionary
 
 # -----------------------------
 # LangGraph Workflow 

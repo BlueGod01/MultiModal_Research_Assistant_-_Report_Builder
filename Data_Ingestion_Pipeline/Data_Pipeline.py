@@ -1,4 +1,5 @@
 import os
+import logging
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from functools import partial
 from Data_Ingestion_Pipeline.parser import convert_document
@@ -9,19 +10,19 @@ PDF_DIR = "uploads"
 def pipeline(document_path: str, parsing_strategy: str = "medium"):
     try:
         # Step 1: Convert PDF to structured document
-        print(f"Converting document '{document_path}'...")
+        logging.info(f"Converting document '{document_path}'...")
         docs = convert_document(document_path, parsing_strategy=parsing_strategy)
 
         # Step 2: Extract content and chunk
         for doc in docs:
             record, image_map = extract_and_chunk(doc, document_path=document_path)
-            print(f"Extracted {len(record)} records from {os.path.basename(document_path)}.")
+            logging.info(f"Extracted {len(record)} records from {os.path.basename(document_path)}.")
             
             # Step 3: Store chunks in Pinecone
             store_in_pinecone(records=record, image_path_list=image_map)
             
     except Exception as e:
-        print(f"Error processing {document_path}: {e}")
+        logging.error(f"Error processing {document_path}: {e}")
 
 def run_parallel_pipeline(directory_path: str, max_workers: int = 2, strategy: str = "medium")-> None:
     """
@@ -30,7 +31,7 @@ def run_parallel_pipeline(directory_path: str, max_workers: int = 2, strategy: s
       Defaults to number of processors if None.
     """
     if not os.path.exists(directory_path):
-        print(f"Directory '{directory_path}' does not exist.")
+        logging.error(f"Directory '{directory_path}' does not exist.")
         return
 
     # Gather all PDF paths from directory
@@ -58,5 +59,5 @@ def run_parallel_pipeline(directory_path: str, max_workers: int = 2, strategy: s
             try:
                 future.result()
             except Exception as exc:
-                print(f"File {pdf} generated an unhandled exception: {exc}")
+                logging.error(f"File {pdf} generated an unhandled exception: {exc}")
 

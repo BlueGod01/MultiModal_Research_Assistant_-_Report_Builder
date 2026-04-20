@@ -4,9 +4,14 @@ from Graph_Workflow.QnA_Research_Subgraph import QA_Research_Subgraph
 from Graph_Workflow.Orchestrator_Planner_Worker import orchestrator_node, fanout, worker_node
 from Graph_Workflow.ReducerWithImages_subgraph import reducer_subgraph
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
+
+# Replace InMemorySaver
+longmemory = SqliteSaver.from_conn_string("sqlite:///memory.db")
 #---------------------------------------------------
 #Creating short-term memory
-memory = InMemorySaver()
+#shortmemory = InMemorySaver()
+
 #---------------------------------------------------
 #Creating the final Subgraph:
 #Creating the nodes of the graph
@@ -40,5 +45,5 @@ g.add_edge("orchestrator", "worker")
 g.add_edge("worker", "reducer")
 g.add_edge("reducer", END)
 
-research_graph = g.compile(checkpointer=memory)
+research_graph = g.compile(checkpointer=longmemory)#Added memory layer to the system.
 

@@ -1,5 +1,6 @@
 from pinecone import Pinecone, ServerlessSpec
 import os
+import logging
 from Data_Ingestion_Pipeline.embedder import get_document_embeddings, get_query_embedding
 from Data_Ingestion_Pipeline.embedder import embed_image, embed_image_query
 import hashlib
@@ -28,12 +29,12 @@ def init_pinecone_index()-> Pinecone.Index:
                 metric="cosine",
                 spec=ServerlessSpec(cloud="aws", region="us-east-1"),
             )
-            print(f"Created Pinecone index: {PINECONE_INDEX_NAME}")
+            logging.info(f"Created Pinecone index: {PINECONE_INDEX_NAME}")
 
         return pc.Index(PINECONE_INDEX_NAME)
     
     except Exception as e:
-        print(f"Error initializing Pinecone index: {e}")
+        logging.error(f"Error initializing Pinecone index: {e}")
 
 def generate_vector_id(source: str, chunk_index: int) -> str:
     """Generate a deterministic ID so re-runs upsert (not duplicate)."""
@@ -59,7 +60,7 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
 
     # Embed all enriched texts
     enriched_texts = [r["enriched_text"] for r in records]
-    print(f"Embedding {len(enriched_texts)} chunks with {EMBEDDING_MODEL}...")
+    logging.info(f"Embedding {len(enriched_texts)} chunks with {EMBEDDING_MODEL}...")
 
     all_embeddings = []
     # Google AI Studio API supports batching
@@ -69,7 +70,7 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
             batch_embeddings = get_document_embeddings(batch)
             all_embeddings.extend(batch_embeddings)
     except Exception as e:
-        print(f"Error during embedding: {e}\nCheck your API key, model name, and network connection.")
+        logging.error(f"Error during embedding: {e}\nCheck your API key, model name, and network connection.")
         return
 
     # Build Pinecone vectors
@@ -90,7 +91,7 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
         })
 
     # Upsert in batches
-    print(f"Upserting {len(vectors)} vectors to Pinecone...")
+    logging.info(f"Upserting {len(vectors)} vectors to Pinecone...")
     for i in range(0, len(vectors), BATCH_SIZE):
         batch = vectors[i : i + BATCH_SIZE]
         index.upsert(vectors=batch, namespace='text&tables')
@@ -114,10 +115,10 @@ def store_in_pinecone(records: list[dict], image_path_list: List[dict]) -> None:
                     "base64_string": get_base64_image(image_path)
                 }
             }], namespace='images')
-    print(f" Successfully stored {len(vectors)} chunks in '{PINECONE_INDEX_NAME}'")
-    print(f" Successfully stored {len(image_path_list)} images in '{PINECONE_INDEX_NAME}' under 'images' namespace")
+    logging.info(f" Successfully stored {len(vectors)} chunks in '{PINECONE_INDEX_NAME}'")
+    logging.info(f" Successfully stored {len(image_path_list)} images in '{PINECONE_INDEX_NAME}' under 'images' namespace")
     stats = index.describe_index_stats()
-    print(f"Index stats: {stats}")
+    logging.info(f"Index stats: {stats}")
 
 def query_pinecone(query: str, top_k: int = 5, namespace: Optional[str] = None) -> list[dict]:
     """Query the index and return matching chunks with metadata."""
