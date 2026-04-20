@@ -135,7 +135,7 @@ def run_agentic_system(request: UserInput, response: Response, session_id_cookie
 
     # Step 3: Prepare state
     state = {
-        "user_input": request.user_input
+        "user_input": request.query
         # No need to pass chat_history manually
         # LangGraph will auto-load it via checkpointer
     }
@@ -149,7 +149,7 @@ def run_agentic_system(request: UserInput, response: Response, session_id_cookie
     # Step 5: Return response
     return AIResponse(
         session_id=session_id,
-        response=result.qa_response,
+        response=result.get("qa_response", ""),
         is_new_session=is_new,
-        research_report=result.final
+        research_report=result.get("final", "")
     )
