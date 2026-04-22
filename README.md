@@ -27,14 +27,17 @@ This is the Final Graph Workflow
 
 Subgraphs:
 
-This subgraph is of the Q&A bot and its interactions with Research Agent
+This subgraph is of the Q&Anode and its interactions with Research Agent
 <img width="326" height="273" alt="QnAResearchBot" src="https://github.com/user-attachments/assets/b2ab4bdb-96a8-4a69-89f5-a108cb29577d" />
+The orchestrator-worker does the content writing, based on the research conversation. Orchestrator creates a plan on how to write the report and divides it into sections. 
+and assigns workers for each section task. The workers execute each tasks parallely and sends to reducer node:
+<img width="2395" height="2221" alt="mermaid-diagram (2)" src="https://github.com/user-attachments/assets/de0b9759-7584-41a8-b62f-463b99d235ef" />
 
-This subgraph merges all the generated content for the report and decides where to put the images in the content.
+'reducer' subgraph merges all the generated content for the report and decides where to put the images and generate images if required in the content.
 <img width="252" height="432" alt="Reducer_Subgraph" src="https://github.com/user-attachments/assets/0d02d2b8-850d-43ad-a864-57eb8f617491" />
 
 Data Ingestion Pipeline:
-<img width="3231" height="526" alt="mermaid-diagram (1)" src="https://github.com/user-attachments/assets/ae77dff9-e8cf-4534-9668-2329adeb62b6" />
+<img width="3231" height="726" alt="mermaid-diagram (1)" src="https://github.com/user-attachments/assets/ae77dff9-e8cf-4534-9668-2329adeb62b6" />
 
 
 ## How It Works
@@ -87,6 +90,7 @@ This architecture heavily leverages Google's **Gemini 1.5 Flash**, which offers 
 - The time for parsing multiple pdfs is reduced by running this whole pipeline parallel or asyncronously for each individual pdfs
 - Parsing strategy is being provided viz. Fast, Medium or Deep. Fast strategy only extracts the text perfect for digital texts pdfs, medium balances between speed and parsing quality. Deep strategy is recommended for scanned pdfs or pdfs with large number of images.
 - This process happens in background, simultaneously user can interact with the chatbot and perform web searches until the Data Ingestion Pipeline is complete. Without needing to wait.
+- Orchestrator-worker reduces time by writing each section of Research-Report parallely.
   
 ## ⚠️ Limitations
 
