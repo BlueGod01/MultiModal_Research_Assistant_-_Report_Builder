@@ -44,7 +44,8 @@ The system operates across two main pipelines: **Data Ingestion** and the **Agen
 ### 1. Data Ingestion Pipeline (`Data_Ingestion_Pipeline/`)
 - Parses PDF documents (text and images) and chunks them.
 - Generates embeddings using Google Generative AI and upserts them into a Pinecone vector database.
-
+- What makes this special: For multiple uploaded pdfs parsing is done parallely thus reducing latency in Knowledge Base Creation.
+- 
 ### 2. Retrieval-Augmented Generation (`RAG_Pipeline/`)
 - A custom retriever extracts top documents and relevant images.
 - A Cross-Encoder (`BAAI/bge-reranker-large`) re-ranks the results to ensure maximum contextual relevance.
