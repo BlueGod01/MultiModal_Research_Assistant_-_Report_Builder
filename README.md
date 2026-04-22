@@ -33,6 +33,8 @@ This subgraph is of the Q&A bot and its interactions with Research Agent
 This subgraph merges all the generated content for the report and decides where to put the images in the content.
 <img width="252" height="432" alt="Reducer_Subgraph" src="https://github.com/user-attachments/assets/0d02d2b8-850d-43ad-a864-57eb8f617491" />
 
+Data Ingestion Pipeline:
+<img width="3231" height="526" alt="mermaid-diagram (1)" src="https://github.com/user-attachments/assets/ae77dff9-e8cf-4534-9668-2329adeb62b6" />
 
 
 ## How It Works
