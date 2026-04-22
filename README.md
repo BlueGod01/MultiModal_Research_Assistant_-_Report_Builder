@@ -22,13 +22,17 @@ Writing in-depth research reports requires significant time gathering sources, s
 | PDF Export | ReportLab |
 
 ## Architecture
-<img width="242" height="585" alt="Final_Graph" src="https://github.com/user-attachments/assets/649ef2f2-7fce-402e-a5b5-c6780780aaba" />
 This is the Final Graph Workflow
+<img width="242" height="585" alt="Final_Graph" src="https://github.com/user-attachments/assets/649ef2f2-7fce-402e-a5b5-c6780780aaba" />
+
 Subgraphs:
-<img width="326" height="273" alt="QnAResearchBot" src="https://github.com/user-attachments/assets/b2ab4bdb-96a8-4a69-89f5-a108cb29577d" />
+
 This subgraph is of the Q&A bot and its interactions with Research Agent
-<img width="252" height="432" alt="Reducer_Subgraph" src="https://github.com/user-attachments/assets/0d02d2b8-850d-43ad-a864-57eb8f617491" />
+<img width="326" height="273" alt="QnAResearchBot" src="https://github.com/user-attachments/assets/b2ab4bdb-96a8-4a69-89f5-a108cb29577d" />
+
 This subgraph merges all the generated content for the report and decides where to put the images in the content.
+<img width="252" height="432" alt="Reducer_Subgraph" src="https://github.com/user-attachments/assets/0d02d2b8-850d-43ad-a864-57eb8f617491" />
+
 
 
 ## How It Works
