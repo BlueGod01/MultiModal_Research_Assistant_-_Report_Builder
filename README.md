@@ -83,6 +83,11 @@ This architecture heavily leverages Google's **Gemini 1.5 Flash**, which offers 
 
 > *Conclusion: Building a multi-agent system often leads to exponential API costs (especially with ReAct loops). However, by utilizing Gemini 1.5 Flash, the orchestrator-worker fanout architecture remains incredibly cheap.*
 
+## Latency Handling:
+- The time for parsing multiple pdfs is reduced by running this whole pipeline parallel or asyncronously for each individual pdfs
+- Parsing strategy is being provided viz. Fast, Medium or Deep. Fast strategy only extracts the text perfect for digital texts pdfs, medium balances between speed and parsing quality. Deep strategy is recommended for scanned pdfs or pdfs with large number of images.
+- This process happens in background, simultaneously user can interact with the chatbot and perform web searches until the Data Ingestion Pipeline is complete. Without needing to wait.
+  
 ## ⚠️ Limitations
 
 - **Hardware Requirements**: The data ingestion pipeline uses `docling` for parsing complex scanned PDFs. Since `docling` leverages heavy deep learning models under the hood for vision and layout analysis, it demands significant system RAM and CPU capabilities, and ideally a dedicated GPU.
