@@ -4,9 +4,12 @@ A powerful LangGraph-based workflow that combines conversational web research, m
 
 ![Python](https://img.shields.io/badge/python-3.12-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-0.127-green) ![LangGraph](https://img.shields.io/badge/LangGraph-Agent-orange) ![Pinecone](https://img.shields.io/badge/Pinecone-VectorDB-blueviolet) ![Google Gemini](https://img.shields.io/badge/Gemini_1.5-Flash-yellow)
 
-## Why This Project
+## The Need for a Research Assistant:
+Writing in-depth research reports traditionally requires substantial time for source gathering, information synthesis, and structured document creation. This agentic system significantly accelerates the process by enabling parallel processing of user-uploaded documents, making it highly efficient for complex research workflows. It automates the heavy lifting through a well-orchestrated agentic architecture, allowing users to interact conversationally with both their documents and external knowledge sources.
 
-Writing in-depth research reports requires significant time gathering sources, synthesizing information, and structuring the final document. This project automates the heavy lifting by leveraging an **agentic workflow**. It allows users to casually chat with their documents and the internet, and once satisfied, trigger a team of AI agents (Planner, Workers, Reducer) to systematically draft a comprehensive, human-reviewed PDF report.
+Once the user is satisfied with the research context and asks to create a report, the system initiates a coordinated team of AI agents—comprising a Planner (Orchestrator), multiple Workers, and a Reducer—to systematically generate a comprehensive, high-quality Research report. Each Worker agent is assigned a specific section while maintaining awareness of the global plan, ensuring coherence and contextual alignment across the document.
+
+Additionally, the system intelligently determines where visual elements are required and either retrieves relevant images from the provided documents or generates them using AI models. Since deep research often involves extensive browsing and iterative reading, this approach drastically reduces the time and effort involved—transforming workflows that typically take days into minutes, and months into hours.
 
 ## Tech Stack
 
