@@ -1,4 +1,6 @@
 # Agentic Research Assistant & Report Builder
+<img width="1536" height="1024" alt="ChatGPT Image Mar 13, 2026, 04_39_29 PM" src="https://github.com/user-attachments/assets/c27ceaf3-7b63-4de2-b6df-1a70386e7542" />
+
 
 A powerful LangGraph-based workflow that combines conversational web research, multimodal RAG (Retrieval-Augmented Generation), and an automated orchestrator-worker architecture to plan, write, review, and export comprehensive research reports.
 
